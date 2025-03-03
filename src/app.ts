@@ -12,8 +12,9 @@ import { toNodeHandler } from "better-auth/node";
 import { auth } from "./lib/auth";
 import router from "./routes";
 import httpErrors, { HttpError } from "http-errors";
-import { InputTypeOfTuple, ZodError } from "zod";
+import { ZodError } from "zod";
 import status from "http-status";
+import { APIError } from "better-auth/api";
 
 const app = express();
 
@@ -79,7 +80,7 @@ app.use((req, _, next) => {
 
 app.use(
   (
-    err: Error | HttpError | ZodError,
+    err: Error | HttpError | ZodError | APIError,
     req: Request,
     res: Response,
     _: NextFunction,
@@ -96,9 +97,12 @@ app.use(
     } else if (err instanceof HttpError) {
       responseMessage = err.message;
       responseStatus = err.status;
+    } else if (err instanceof APIError) {
+      responseMessage = err.message;
+      responseStatus = status.UNPROCESSABLE_ENTITY;
     } else {
       responseMessage = `Cannot process req [${req.method}] ${req.url}`;
-      responseStatus = 500;
+      responseStatus = status.INTERNAL_SERVER_ERROR;
     }
 
     res.status(responseStatus).json({

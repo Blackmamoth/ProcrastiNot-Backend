@@ -22,19 +22,15 @@ export default class TaskController {
     next: NextFunction,
   ): Promise<void> {
     try {
-      const result = await createTaskSchema.safeParseAsync(req.body);
-
-      if (!result.success && !result.data) {
-        throw result.error;
-      }
+      const data = await createTaskSchema.parseAsync(req.body);
 
       const userId = req.user?.id!;
 
       const insertValues: AddTaskType = {
-        title: result.data.title,
-        priority: result.data.priority,
-        deadline: result.data.deadline,
-        description: result.data.description,
+        title: data.title,
+        priority: data.priority,
+        deadline: data.deadline,
+        description: data.description,
         userId,
       };
 
@@ -68,18 +64,14 @@ export default class TaskController {
     next: NextFunction,
   ): Promise<void> {
     try {
-      const result = await getTasksSchema.safeParseAsync(req.body);
-
-      if (!result.success && !result.data) {
-        throw result.error;
-      }
+      const data = await getTasksSchema.parseAsync(req.body);
 
       const userId = req.user?.id!;
 
       const query: GetTaskType = {
-        task_id: result.data.task_id,
-        search: result.data.search,
-        priority: result.data.priority,
+        task_id: data.task_id,
+        search: data.search,
+        priority: data.priority,
       };
 
       const tasks = await db
@@ -115,18 +107,14 @@ export default class TaskController {
     next: NextFunction,
   ): Promise<void> {
     try {
-      const result = await updateTaskSchema.safeParseAsync(req.body);
-
-      if (!result.success && !result.data) {
-        throw result.error;
-      }
+      const data = await updateTaskSchema.parseAsync(req.body);
 
       const userId = req.user?.id!;
 
       const updateValues: UpdateTaskType = {
-        priority: result.data.priority,
-        deadline: result.data.deadline,
-        task_id: result.data.task_id,
+        priority: data.priority,
+        deadline: data.deadline,
+        task_id: data.task_id,
       };
 
       const taskObj = await db
@@ -157,13 +145,9 @@ export default class TaskController {
     next: NextFunction,
   ): Promise<void> {
     try {
-      const result = await deleteTaskSchema.safeParseAsync(req.body);
+      const data = await deleteTaskSchema.parseAsync(req.body);
 
-      if (!result.success && !result.data) {
-        throw result.error;
-      }
-
-      const deleteValues: DeleteTaskType = { task_id: result.data.task_id };
+      const deleteValues: DeleteTaskType = { task_id: data.task_id };
 
       const userId = req.user?.id!;
 

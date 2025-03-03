@@ -12,6 +12,8 @@ const authController = new AuthController();
 const taskController = new TaskController();
 const profileController = new ProfileController();
 
+router.post("/auth/signup", authController.authSignUp);
+router.post("/auth/signin", authController.authSignIn);
 router.get("/auth/signin/google", authController.oauthSignin);
 
 router.post(

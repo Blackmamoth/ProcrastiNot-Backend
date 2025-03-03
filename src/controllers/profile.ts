@@ -18,10 +18,7 @@ export default class ProfileController {
     next: NextFunction,
   ): Promise<void> {
     try {
-      const result = await addProfileSchema.safeParseAsync(req.body);
-      if (!result.success && !result.data) {
-        throw result.error;
-      }
+      const data = await addProfileSchema.parseAsync(req.body);
 
       const userId = req.user?.id!;
 
@@ -37,12 +34,12 @@ export default class ProfileController {
       }
 
       const insertValues: AddProfileType = {
-        age: result.data.age,
-        background: result.data.background,
-        currentRoutine: result.data.currentRoutine,
-        mainGoal: result.data.mainGoal,
-        motivation: result.data.motivation,
-        procrastinationTriggers: result.data.procrastinationTriggers,
+        age: data.age,
+        background: data.background,
+        currentRoutine: data.currentRoutine,
+        mainGoal: data.mainGoal,
+        motivation: data.motivation,
+        procrastinationTriggers: data.procrastinationTriggers,
         userId: userId,
       };
 
@@ -94,10 +91,7 @@ export default class ProfileController {
     next: NextFunction,
   ): Promise<void> {
     try {
-      const result = await updateProfileSchema.safeParseAsync(req.body);
-      if (!result.success && !result.data) {
-        throw result.error;
-      }
+      const data = await updateProfileSchema.parseAsync(req.body);
 
       const userId = req.user?.id!;
 
@@ -112,12 +106,12 @@ export default class ProfileController {
       }
 
       let updateValues: UpdateProfileType = {
-        motivation: result.data.motivation,
-        age: result.data.age,
-        background: result.data.background,
-        currentRoutine: result.data.currentRoutine,
-        mainGoal: result.data.mainGoal,
-        procrastinationTriggers: result.data.procrastinationTriggers,
+        motivation: data.motivation,
+        age: data.age,
+        background: data.background,
+        currentRoutine: data.currentRoutine,
+        mainGoal: data.mainGoal,
+        procrastinationTriggers: data.procrastinationTriggers,
       };
 
       await db
